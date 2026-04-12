@@ -1,3 +1,12 @@
+let usuario = localStorage.getItem("usuario");
+
+if (!usuario) {
+    usuario = Math.random().toString(36).substring(2);
+    localStorage.setItem("usuario", usuario);
+}
+
+console.log("Usuário:", usuario);
+
 console.log("NOVO SCRIPT AQUI");
 
 const API = "/transacoes";
