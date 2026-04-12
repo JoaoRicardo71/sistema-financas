@@ -58,7 +58,7 @@ async function adicionar() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ descricao, valor, tipo })
+            body: JSON.stringify({ descricao, valor, tipo, usuario })
         });
 
         carregar();
