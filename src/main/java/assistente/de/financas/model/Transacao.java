@@ -7,6 +7,8 @@ public class Transacao {
     @Id // - Indica que o campo 'id' é a chave primária da entidade.
     @GeneratedValue(strategy = GenerationType.IDENTITY) // - O banco de dados irá gerar automaticamente o valor do 'id' para cada nova transação.
 
+    private String usuario;
+
     private Long id;
 
     private String descricao;
@@ -30,5 +32,13 @@ public class Transacao {
 
     public TipoTransacao getTipo() {
         return tipo;
+    }
+
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 }
