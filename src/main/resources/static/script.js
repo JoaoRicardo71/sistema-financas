@@ -1,6 +1,6 @@
 console.log("NOVO SCRIPT AQUI");
 
-const API = "http://localhost:8080/transacoes";
+const API = "/transacoes";
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("SCRIPT OK");
