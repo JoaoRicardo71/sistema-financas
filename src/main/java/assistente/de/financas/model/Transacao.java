@@ -1,23 +1,26 @@
 package assistente.de.financas.model;
 import jakarta.persistence.*;
 
-@Entity // - Indica que esta classe é uma entidade JPA, ou seja, será mapeada para uma tabela no banco de dados.
+@Entity
 public class Transacao {
 
-    @Id // - Indica que o campo 'id' é a chave primária da entidade.
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // - O banco de dados irá gerar automaticamente o valor do 'id' para cada nova transação.
-
-    private String usuario;
-
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // 👈 ID CORRETO
 
     private String descricao;
 
     private Double valor;
 
     @Enumerated(EnumType.STRING)
-    private TipoTransacao tipo; // - essas variaveis viram colunas no banco de dados
+    private TipoTransacao tipo;
 
+    private String usuario; // 👈 usuário separado
+
+    // 👇 CONSTRUTOR (IMPORTANTE)
+    public Transacao() {}
+
+    // getters e setters
     public Long getId() {
         return id;
     }
@@ -36,6 +39,18 @@ public class Transacao {
 
     public String getUsuario() {
         return usuario;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public void setValor(Double valor) {
+        this.valor = valor;
+    }
+
+    public void setTipo(TipoTransacao tipo) {
+        this.tipo = tipo;
     }
 
     public void setUsuario(String usuario) {
