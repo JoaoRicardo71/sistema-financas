@@ -5,14 +5,15 @@ import assistente.de.financas.service.TransacaoService;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.HashMap;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 @RestController // - Indica que esta classe é um controlador REST, ou seja, ela irá lidar com requisições HTTP e retornar respostas em formato JSON.
 @RequestMapping("/transacoes") // - Define a URL base para todas as rotas deste controlador. Neste caso, todas as rotas começarão com "/transacoes".
 public class TransacaoController {
 
-    private final TransacaoService service;
+    @Autowired
+    private TransacaoService service;
 
     public TransacaoController(TransacaoService service) {
         this.service = service;
@@ -23,9 +24,9 @@ public class TransacaoController {
         return service.salvar(transacao);
     }
 
-    @GetMapping // - Retorna uma lista de transações
-    public List<Transacao> listar() {
-        return service.listar();
+    @GetMapping("/transacoes")
+    public List<Transacao> listar(@RequestParam String usuario) {
+        return service.listarPorUsuario(usuario);
     }
 
     @DeleteMapping("/{id}")

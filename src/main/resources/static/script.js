@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // CARREGAR LISTA
 // ==========================
 async function carregar() {
-    const resposta = await fetch(API);
+    const resposta = await fetch(`${API}?usuario=${usuario}`);
     const dados = await resposta.json();
 
     console.log("DADOS:", dados);

@@ -48,5 +48,10 @@ public class TransacaoService {
     public Double totalDespesas() {
         return repository.totalDespesas();
     }
+
+    public List<Transacao> listarPorUsuario(String usuario) {
+        return repository.findByUsuario(usuario);
+    }
 }
+
 
