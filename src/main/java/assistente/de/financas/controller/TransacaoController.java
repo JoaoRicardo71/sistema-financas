@@ -24,7 +24,7 @@ public class TransacaoController {
         return service.salvar(transacao);
     }
 
-    @GetMapping("/transacoes")
+    @GetMapping
     public List<Transacao> listar(@RequestParam String usuario) {
         return service.listarPorUsuario(usuario);
     }
