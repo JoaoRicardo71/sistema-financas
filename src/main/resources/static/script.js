@@ -1,7 +1,13 @@
 const API = "http://localhost:8080/transacoes";
 
-// gera usuário automático (multiusuário simples)
+// ==========================
+// USUÁRIO (multiusuário simples)
+// ==========================
 let usuario = localStorage.getItem("usuario");
+
+if (!usuario) {
+    window.location.href = "login.html";
+}
 
 if (!usuario) {
     usuario = Math.random().toString(36).substring(2);
@@ -10,19 +16,14 @@ if (!usuario) {
 
 console.log("Usuário:", usuario);
 
+// ==========================
+// INIT
+// ==========================
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("SCRIPT OK");
-
     const botao = document.getElementById("btnAdicionar");
-    console.log("BOTÃO:", botao);
 
     if (botao) {
-        botao.addEventListener("click", () => {
-            console.log("CLIQUE FUNCIONOU");
-            adicionar();
-        });
-    } else {
-        console.error("BOTÃO NÃO ENCONTRADO");
+        botao.addEventListener("click", adicionar);
     }
 
     carregar();
@@ -36,28 +37,34 @@ async function carregar() {
         const resposta = await fetch(`${API}?usuario=${usuario}`);
         const dados = await resposta.json();
 
-        const lista = document.getElementById("lista");
-        lista.innerHTML = "";
-
-        dados.forEach(t => {
-            const item = document.createElement("li");
-
-            const classe = t.tipo === "RECEITA" ? "receita" : "despesa";
-
-            item.innerHTML = `
-                <span>${t.descricao}</span>
-                <span class="${classe}">R$ ${t.valor}</span>
-            `;
-
-            lista.appendChild(item);
-        });
-
+        renderLista(dados);
         atualizarSaldo();
         carregarGrafico();
 
     } catch (erro) {
         console.error("Erro ao carregar:", erro);
     }
+}
+
+// ==========================
+// RENDER LISTA
+// ==========================
+function renderLista(dados) {
+    const lista = document.getElementById("lista");
+    lista.innerHTML = "";
+
+    dados.forEach(t => {
+        const item = document.createElement("li");
+
+        const classe = t.tipo === "RECEITA" ? "receita" : "despesa";
+
+        item.innerHTML = `
+            <span>${t.descricao}</span>
+            <span class="${classe}">R$ ${t.valor}</span>
+        `;
+
+        lista.appendChild(item);
+    });
 }
 
 // ==========================
@@ -140,4 +147,41 @@ async function carregarGrafico() {
     } catch (erro) {
         console.error("Erro no gráfico:", erro);
     }
+}
+
+// ==========================
+// LOGIN
+// ==========================
+
+document.getElementById("btnLogin").addEventListener("click", login);
+
+async function login() {
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+
+    try {
+        const res = await fetch("http://localhost:8080/usuarios/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email, senha })
+        });
+
+        if (!res.ok) throw new Error("Login falhou");
+
+        const user = await res.json();
+
+        // 🔥 salva usuário logado
+        localStorage.setItem("usuario", user.email);
+
+        alert("Login realizado!");
+
+        window.location.href = "index.html";
+
+    } catch (e) {
+        alert("Erro no login");
+    }
+    console.log("EMAIL:", email);
+    console.log("SENHA:", senha);
 }
