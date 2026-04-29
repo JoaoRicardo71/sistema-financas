@@ -3,23 +3,22 @@ package assistente.de.financas.controller;
 import assistente.de.financas.model.Transacao;
 import assistente.de.financas.service.TransacaoService;
 import org.springframework.web.bind.annotation.*;
-import java.util.Map;
-import java.util.HashMap;
-import org.springframework.beans.factory.annotation.Autowired;
-import java.util.List;
 
-@RestController // - Indica que esta classe é um controlador REST, ou seja, ela irá lidar com requisições HTTP e retornar respostas em formato JSON.
-@RequestMapping("/transacoes") // - Define a URL base para todas as rotas deste controlador. Neste caso, todas as rotas começarão com "/transacoes".
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/transacoes")
 public class TransacaoController {
 
-    @Autowired
-    private TransacaoService service;
+    private final TransacaoService service;
 
     public TransacaoController(TransacaoService service) {
         this.service = service;
     }
 
-    @PostMapping // - Recebe JSON e salva no banco
+    @PostMapping
     public Transacao salvar(@RequestBody Transacao transacao) {
         return service.salvar(transacao);
     }
@@ -35,19 +34,28 @@ public class TransacaoController {
     }
 
     @GetMapping("/saldo")
-    public Double saldo() {
-        return service.calcularSaldo();
+    public Double saldo(@RequestParam String usuario) {
+        return service.calcularSaldo(usuario);
     }
 
     @GetMapping("/resumo")
-    public Map<String, Double> getResumo() {
-        Double receitas = service.totalReceitas();
-        Double despesas = service.totalDespesas();
+    public Map<String, Double> getResumo(@RequestParam String usuario) {
 
-        Map<String, Double> dados = new HashMap<>();
-        dados.put("receitas", receitas != null ? receitas : 0);
-        dados.put("despesas", despesas != null ? despesas : 0);
+        Double receitas = service.listarPorUsuario(usuario)
+                .stream()
+                .filter(t -> t.getTipo().name().equals("RECEITA"))
+                .mapToDouble(t -> t.getValor())
+                .sum();
 
-        return dados;
+        Double despesas = service.listarPorUsuario(usuario)
+                .stream()
+                .filter(t -> t.getTipo().name().equals("DESPESA"))
+                .mapToDouble(t -> t.getValor())
+                .sum();
+
+        return Map.of(
+                "receitas", receitas,
+                "despesas", despesas
+        );
     }
 }

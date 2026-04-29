@@ -16,42 +16,30 @@ public class TransacaoService {
         this.repository = repository;
     }
 
+    //  Salvar
     public Transacao salvar(Transacao transacao) {
         return repository.save(transacao);
     }
 
-    public List<Transacao> listar() {
-        return repository.findAll();
+    //  Listar por usuário
+    public List<Transacao> listarPorUsuario(String usuario) {
+        return repository.findByUsuario(usuario);
     }
 
-    public void deletar(Long id) {
-        repository.deleteById(id);
-    }
-
-    public Double calcularSaldo() {
-        return repository.findAll()
+    public Double calcularSaldo(String usuario) {
+        return repository.findByUsuario(usuario)
                 .stream()
-                .mapToDouble(transacao -> {
-                    if (transacao.getTipo() == TipoTransacao.RECEITA) {
-                        return transacao.getValor();
+                .mapToDouble(t -> {
+                    if (t.getTipo() == TipoTransacao.RECEITA) {
+                        return t.getValor();
                     } else {
-                        return -transacao.getValor();
+                        return -t.getValor();
                     }
                 })
                 .sum();
     }
 
-    public Double totalReceitas() {
-        return repository.totalReceitas();
-    }
-
-    public Double totalDespesas() {
-        return repository.totalDespesas();
-    }
-
-    public List<Transacao> listarPorUsuario(String usuario) {
-        return repository.findByUsuario(usuario);
+    public void deletar(Long id) {
     }
 }
-
 
